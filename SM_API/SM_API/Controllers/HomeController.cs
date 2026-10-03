@@ -1,4 +1,6 @@
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using SM_API.Models;
 
 namespace SM_API.Controllers
@@ -11,7 +13,13 @@ namespace SM_API.Controllers
         [Route("Login")]
         public IActionResult Login(LoginRequestModel model)
         {
-            //Autenticación contra la base de datos
+            using var context = new SqlConnection("Server=PC?; Database=SM_DB?; Trusted_Connection=True;TrustServerCertificate=True;");
+            
+            var parametros = new DynamicParameters();
+            parametros.Add("@CorreoElectronico", model.CorreoElectronico);
+            parametros.Add("@Contrasenna", model.Contrasenna);
+
+            var response = context.Query("SP", parametros);
 
             return Ok(model);
         }
@@ -20,7 +28,15 @@ namespace SM_API.Controllers
         [Route("Register")]
         public IActionResult Register(RegisterRequestModel model)
         {
-            //Registro contra la base de datos
+            using var context = new SqlConnection("Server=PC?; Database=SM_DB?; Trusted_Connection=True;TrustServerCertificate=True;");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@CorreoElectronico", model.CorreoElectronico);
+            parametros.Add("@Contrasenna", model.Contrasenna);
+            parametros.Add("@Identificacion", model.Identificacion);
+            parametros.Add("@NombreCompleto", model.NombreCompleto);
+
+            var response = context.Execute("SP", parametros);
 
             return Ok(model);
         }
@@ -29,11 +45,12 @@ namespace SM_API.Controllers
         [Route("ForgotPassword")]
         public IActionResult ForgotPassword(ForgotRequestModel model)
         {
-            //Revisar si el usuario existe GET
+            using var context = new SqlConnection("Server=PC?; Database=SM_DB?; Trusted_Connection=True;TrustServerCertificate=True;");
 
-            //Actualizar contraseña por una clave temporal PUT
+            var parametros = new DynamicParameters();
+            parametros.Add("@Identificacion", model.Identificacion);
 
-            //Enviarle un correo al usuario con la clave temporal POST
+            var response = context.Query("SP", parametros);
 
             return Ok(model);
         }
