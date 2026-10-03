@@ -9,11 +9,34 @@ namespace SM_API.Controllers
     {
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(UsuarioModel model)
+        public IActionResult Login(LoginRequestModel model)
         {
             //Autenticación contra la base de datos
 
             return Ok(model);
         }
+
+        [HttpPost]
+        [Route("Register")]
+        public IActionResult Register(RegisterRequestModel model)
+        {
+            //Registro contra la base de datos
+
+            return Ok(model);
+        }
+
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public IActionResult ForgotPassword(ForgotRequestModel model)
+        {
+            //Revisar si el usuario existe GET
+
+            //Actualizar contraseña por una clave temporal PUT
+
+            //Enviarle un correo al usuario con la clave temporal POST
+
+            return Ok(model);
+        }
+
     }
 }

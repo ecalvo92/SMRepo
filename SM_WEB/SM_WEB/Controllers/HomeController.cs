@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SM_WEB.Controllers
 {
-    public class HomeController(HttpClient _httpClient) : Controller
+    public class HomeController(HttpClient _httpClient, IConfiguration _configuration) : Controller
     {
         #region Inicio de Sesión
 
@@ -16,10 +16,10 @@ namespace SM_WEB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(UsuarioModel model)
+        public IActionResult Login(LoginRequestModel model)
         {
             using var client = _httpClient;
-            var url = "https://localhost:7259/api/Home/Login";
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Login";
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
@@ -40,10 +40,10 @@ namespace SM_WEB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(UsuarioModel model)
+        public IActionResult Register(RegisterRequestModel model)
         {
             using var client = _httpClient;
-            var url = "https://localhost:7259/api/Home/Login";
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Register";
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
@@ -64,10 +64,10 @@ namespace SM_WEB.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ForgotPassword(UsuarioModel model)
+        public IActionResult ForgotPassword(ForgotRequestModel model)
         {
             using var client = _httpClient;
-            var url = "https://localhost:7259/api/Home/Login";
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/ForgotPassword";
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
