@@ -19,7 +19,7 @@ namespace SM_API.Controllers
             parametros.Add("@CorreoElectronico", model.CorreoElectronico);
             parametros.Add("@Contrasenna", model.Contrasenna);
 
-            var response = context.Query("SP", parametros);
+            var response = context.QueryFirstOrDefault<UsuarioResponse>("sp_IniciarSesionUsuario", parametros);
 
             return Ok(model);
         }
