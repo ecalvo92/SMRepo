@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SM_WEB.Models;
 using System.Diagnostics;
+using System.Net;
 
 namespace SM_WEB.Controllers
 {
@@ -23,8 +24,10 @@ namespace SM_WEB.Controllers
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
-            //Validar response
+            if(response.StatusCode == HttpStatusCode.OK)
+                return RedirectToAction("Index", "Home");
 
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
             return View();
         }
 
@@ -47,8 +50,10 @@ namespace SM_WEB.Controllers
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
-            //Validar response
+            if (response.StatusCode == HttpStatusCode.OK)
+                return RedirectToAction("Login", "Home");
 
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
             return View();
         }
 

@@ -21,7 +21,10 @@ namespace SM_API.Controllers
 
             var response = context.QueryFirstOrDefault<UsuarioResponse>("sp_IniciarSesionUsuario", parametros);
 
-            return Ok(model);
+            if(response == null)
+                return NotFound("No se validó la información correctamente");
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -38,7 +41,10 @@ namespace SM_API.Controllers
 
             var response = context.Execute("sp_RegistroUsuarios", parametros);
 
-            return Ok(model);
+            if(response <= 0)
+                return UnprocessableEntity("No se registró la información correctamente");
+
+            return Ok("Se registró la información correctamente");
         }
 
         [HttpPost]
