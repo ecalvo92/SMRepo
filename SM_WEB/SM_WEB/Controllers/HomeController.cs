@@ -77,12 +77,36 @@ namespace SM_WEB.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ForgotPassword(ForgotRequestModel model)
         {
+            if(!ModelState.IsValid)
+                return View(model);
+
             using var client = _httpClient;
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/ForgotPassword";
 
             var response = client.PostAsJsonAsync(url, model).Result;
 
-            //Validar response
+            if (response.StatusCode == HttpStatusCode.OK)
+                return RedirectToAction("Login", "Home");
+
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
+            return View();
+        }
+
+        #endregion
+
+        #region Cambiar la Contraseña
+
+        [HttpGet]
+        public IActionResult ChangePassword(string id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
 
             return View();
         }
