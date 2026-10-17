@@ -44,6 +44,21 @@ ALTER TABLE [dbo].[Usuario] ADD  CONSTRAINT [UK_Usuario_Identificacion] UNIQUE N
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
 
+CREATE PROCEDURE [dbo].[sp_ConsultarIdentificacion]
+	@Identificacion	nvarchar(20)
+AS
+BEGIN
+	
+	DECLARE @EstadoActivo BIT = 1
+
+	SELECT	IdUsuario,Identificacion,NombreCompleto,CorreoElectronico,Estado
+	FROM	dbo.Usuario
+	WHERE	Identificacion = @Identificacion
+		AND Estado = 1
+
+END
+GO
+
 CREATE PROCEDURE [dbo].[sp_IniciarSesionUsuario]
 	@CorreoElectronico	nvarchar(100),
 	@Contrasenna		nvarchar(100)
