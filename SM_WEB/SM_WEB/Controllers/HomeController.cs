@@ -19,6 +19,9 @@ namespace SM_WEB.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(LoginRequestModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             using var client = _httpClient;
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Login";
 
@@ -45,6 +48,9 @@ namespace SM_WEB.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterRequestModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             using var client = _httpClient;
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Register";
 
