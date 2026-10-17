@@ -1,12 +1,13 @@
 using Scalar.AspNetCore;
+using SM_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//Esto es un comentario de pruebas
 
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 var app = builder.Build();
 

@@ -17,15 +17,20 @@ document.addEventListener('DOMContentLoaded', function () {
      * Password Visibility Toggle Logic
      * Enables toggling password input between obscured dots and plain text.
      */
-    const togglePassword = document.getElementById('toggle-password');
-    const passwordInput = document.getElementById('Contrasenna');
+    const toggleButtons = document.querySelectorAll('.password-toggle-btn');
 
-    if (togglePassword && passwordInput) {
+    toggleButtons.forEach(function (togglePassword) {
+        const passwordInput = togglePassword.closest('.login-input-group').querySelector('.login-input-password');
+
+        if (!passwordInput) {
+            return;
+        }
+
         togglePassword.addEventListener('click', function () {
             // Toggle input type attribute
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
+
             // Toggle eye icon class & aria-label
             const icon = this.querySelector('i');
             if (type === 'text') {
@@ -42,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.setAttribute('aria-label', 'Show password');
             }
         });
-    }
+    });
 
     /**
      * Client-Side Form Validation Logic

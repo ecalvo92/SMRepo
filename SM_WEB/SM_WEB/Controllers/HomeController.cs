@@ -108,6 +108,8 @@ namespace SM_WEB.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            //llamemos al api para cambiar la contraseña del id usuario encriptado
+
             return View();
         }
 
