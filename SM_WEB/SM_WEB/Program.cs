@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -11,6 +12,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler("/Error/CapturarError");
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 

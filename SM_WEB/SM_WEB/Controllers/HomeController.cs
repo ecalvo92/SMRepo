@@ -99,6 +99,7 @@ namespace SM_WEB.Controllers
         [HttpGet]
         public IActionResult ChangePassword(string id)
         {
+            HttpContext.Session.SetString("UsuarioId", id);
             return View();
         }
 
@@ -108,8 +109,22 @@ namespace SM_WEB.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            //llamemos al api para cambiar la contraseña del id usuario encriptado
+            string usuarioId = HttpContext.Session.GetString("UsuarioId")!;
 
+            if (string.IsNullOrEmpty(usuarioId))
+                ViewBag.Mensaje = "El enlace no es válido o ya expiró";
+
+            model.UsuarioId = usuarioId;
+
+            using var client = _httpClient;
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/ChangePassword";
+
+            var response = client.PutAsJsonAsync(url, model).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+                return RedirectToAction("Login", "Home");
+
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
             return View();
         }
 

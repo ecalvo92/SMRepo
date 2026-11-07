@@ -65,7 +65,7 @@ namespace SM_API.Controllers
                 return NotFound("No se validó la información correctamente");
 
             var horas = 1;
-            var usuarioId = _password.Cifrar(response.IdUsuario.ToString(), TimeSpan.FromMinutes(horas));
+            var usuarioId = _password.Cifrar(response.IdUsuario.ToString(), TimeSpan.FromHours(horas));
             var linkRecuperacion = _configuration.GetValue<string>("ConnectionStrings:UrlRecuperacion") + usuarioId;
 
             var html = System.IO.File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Template", "RecuperarAcceso.html"))
@@ -76,6 +76,29 @@ namespace SM_API.Controllers
             _password.EnviarCorreo(response.CorreoElectronico, "Recuperación de Acceso", html);
 
             return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("ChangePassword")]
+        public IActionResult ChangePassword(ChangePasswordRequestModel model)
+        {
+            string usuarioId = _password.Descifrar(model.UsuarioId);
+
+            if(string.IsNullOrEmpty(usuarioId))
+                return BadRequest("El enlace no es válido o ya expiró");
+
+            using var context = new SqlConnection(_configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@UsuarioId", usuarioId);
+            parametros.Add("@Contrasenna", model.ContrasennaNueva);
+
+            var response = context.Execute("sp_ActualizarContrasenna", parametros);
+
+            if (response <= 0)
+                return UnprocessableEntity("No se actualizó la información correctamente");
+
+            return Ok("Se actualizó la información correctamente");
         }
     }
 }

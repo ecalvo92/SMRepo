@@ -10,5 +10,7 @@ namespace SM_WEB.Models
         [Required(ErrorMessage = "La contraseña de confirmación es obligatoria.")]
         [Compare(nameof(ContrasennaNueva), ErrorMessage = "Las contraseñas no coinciden.")]
         public string ConfirmarContrasenna { get; set; } = string.Empty;
+
+        public string UsuarioId { get; set; } = string.Empty;
     }
 }
