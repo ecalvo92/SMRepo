@@ -26,9 +26,15 @@ namespace SM_WEB.Controllers
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Login";
 
             var response = client.PostAsJsonAsync(url, model).Result;
+            
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var datos = response.Content.ReadFromJsonAsync<UsuarioResponse>().Result;
 
-            if(response.StatusCode == HttpStatusCode.OK)
+                HttpContext.Session.SetInt32("Autenticado", 1);
+                HttpContext.Session.SetString("Nombre", datos!.NombreCompleto);
                 return RedirectToAction("Index", "Home");
+            }
 
             ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
             return View();
@@ -129,6 +135,13 @@ namespace SM_WEB.Controllers
         }
 
         #endregion
+
+        [HttpGet]
+        public IActionResult CerrarSesion()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Home");
+        }
 
         [HttpGet]
         public IActionResult Index()

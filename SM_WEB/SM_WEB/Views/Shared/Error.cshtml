@@ -1,6 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Error";
+    var autenticado = Context.Session.GetInt32("Autenticado");
+
+    if (autenticado != 1)
+    {
+        Layout = "_LayoutExterno";
+    }
 }
+
 <div class="container-fluid py-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-6">
