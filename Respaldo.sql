@@ -23,11 +23,9 @@ GO
 
 SET IDENTITY_INSERT [dbo].[Usuario] ON 
 GO
-INSERT [dbo].[Usuario] ([IdUsuario], [Identificacion], [NombreCompleto], [CorreoElectronico], [Contrasenna], [Estado]) VALUES (1, N'304590415', N'Eduardo', N'ecalvo90415@ufide.ac.cr', N'90415', 1)
+INSERT [dbo].[Usuario] ([IdUsuario], [Identificacion], [NombreCompleto], [CorreoElectronico], [Contrasenna], [Estado]) VALUES (1, N'603700873', N'Flor de Lis Martínez García', N'flordelismg07@gmail.com', N'123***', 1)
 GO
-INSERT [dbo].[Usuario] ([IdUsuario], [Identificacion], [NombreCompleto], [CorreoElectronico], [Contrasenna], [Estado]) VALUES (3, N'304590416', N'Eduardo', N'ecalvo90416@ufide.ac.cr', N'90416', 1)
-GO
-INSERT [dbo].[Usuario] ([IdUsuario], [Identificacion], [NombreCompleto], [CorreoElectronico], [Contrasenna], [Estado]) VALUES (4, N'304590417', N'Eduardo', N'ecalvo90417@ufide.ac.cr', N'90417', 1)
+INSERT [dbo].[Usuario] ([IdUsuario], [Identificacion], [NombreCompleto], [CorreoElectronico], [Contrasenna], [Estado]) VALUES (2, N'304590415', N'Eduardo José Calvo Castillo', N'ecalvo90415@ufide.ac.cr', N'90415', 1)
 GO
 SET IDENTITY_INSERT [dbo].[Usuario] OFF
 GO
@@ -42,6 +40,19 @@ ALTER TABLE [dbo].[Usuario] ADD  CONSTRAINT [UK_Usuario_Identificacion] UNIQUE N
 (
 	[Identificacion] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+CREATE PROCEDURE [dbo].[sp_ActualizarContrasenna] 
+	@UsuarioId		int,
+	@Contrasenna	nvarchar(100)
+AS
+BEGIN
+	
+	UPDATE Usuario
+	SET	Contrasenna = @Contrasenna
+	WHERE IdUsuario = @UsuarioId
+
+END
 GO
 
 CREATE PROCEDURE [dbo].[sp_ConsultarIdentificacion]
