@@ -1,9 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SM_API.Services
 {
-    public class PasswordService : IPasswordService
+    public class PasswordService(IConfiguration _configuration) : IPasswordService
     {
         private readonly byte[] Key = Convert.FromBase64String("sy+v61jJHH5tZTjth2g+PwKpfUiNXWA0ImlUWxikTKUedfPEC6zrkDSzsneTbfkTXJnaEchH7BcVBF4XkqIMDw==");
 
@@ -55,6 +58,27 @@ namespace SM_API.Services
                 }
             }
             catch { return string.Empty; }
+        }
+
+        public async Task EnviarCorreo(string to, string subject, string htmlBody)
+        {
+            var cuenta = _configuration.GetValue<string>("ConnectionStrings:CuentaCorreo") ?? string.Empty;
+            var clave = _configuration.GetValue<string>("ConnectionStrings:ClaveCorreo") ?? string.Empty;
+
+            if(string.IsNullOrEmpty(clave))
+                return;
+
+            var msg = new MimeMessage();
+            msg.From.Add(new MailboxAddress("Web SM", cuenta));
+            msg.To.Add(MailboxAddress.Parse(to));
+            msg.Subject = subject;
+            msg.Body = new BodyBuilder { HtmlBody = htmlBody }.ToMessageBody();
+
+            using var client = new SmtpClient();
+            await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(cuenta, clave);
+            await client.SendAsync(msg);
+            await client.DisconnectAsync(true);
         }
     }
 }

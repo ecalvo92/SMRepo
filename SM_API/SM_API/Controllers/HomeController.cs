@@ -64,12 +64,18 @@ namespace SM_API.Controllers
             if (response == null)
                 return NotFound("No se validó la información correctamente");
 
-            var usuarioId = _password.Cifrar(response.IdUsuario.ToString(), TimeSpan.FromMinutes(30));
+            var horas = 1;
+            var usuarioId = _password.Cifrar(response.IdUsuario.ToString(), TimeSpan.FromMinutes(horas));
             var linkRecuperacion = _configuration.GetValue<string>("ConnectionStrings:UrlRecuperacion") + usuarioId;
 
-            //3. Enviar correo electrónico con el link de recuperación
+            var html = System.IO.File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Template", "RecuperarAcceso.html"))
+                .Replace("{{NOMBRE}}", System.Net.WebUtility.HtmlEncode(response.NombreCompleto))
+                .Replace("{{LINK}}", System.Net.WebUtility.HtmlEncode(linkRecuperacion))
+                .Replace("{{HORAS}}", horas.ToString());
 
-            return Ok(model);
+            _password.EnviarCorreo(response.CorreoElectronico, "Recuperación de Acceso", html);
+
+            return Ok(response);
         }
     }
 }
