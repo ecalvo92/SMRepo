@@ -1,6 +1,7 @@
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Org.BouncyCastle.Crypto.Generators;
 using SM_API.Models;
 using SM_API.Services;
 using System.Security.Cryptography;
@@ -20,13 +21,13 @@ namespace SM_API.Controllers
             
             var parametros = new DynamicParameters();
             parametros.Add("@CorreoElectronico", model.CorreoElectronico);
-            parametros.Add("@Contrasenna", model.Contrasenna);
 
             var response = context.QueryFirstOrDefault<UsuarioResponse>("sp_IniciarSesionUsuario", parametros);
 
-            if(response == null)
+            if(response == null || !BCrypt.Net.BCrypt.Verify(model.Contrasenna, response.Contrasenna))
                 return NotFound("No se validó la información correctamente");
 
+            response.Contrasenna = string.Empty;
             return Ok(response);
         }
 

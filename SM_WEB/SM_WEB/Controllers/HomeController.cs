@@ -57,6 +57,9 @@ namespace SM_WEB.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            //Hacer un hash de la contraseña
+            model.Contrasenna = BCrypt.Net.BCrypt.HashPassword(model.Contrasenna);
+
             using var client = _httpClient;
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Register";
 
@@ -121,6 +124,9 @@ namespace SM_WEB.Controllers
                 ViewBag.Mensaje = "El enlace no es válido o ya expiró";
 
             model.UsuarioId = usuarioId;
+            //Hacer un hash de la contraseña nueva y de la confirmación
+            model.ContrasennaNueva = BCrypt.Net.BCrypt.HashPassword(model.ContrasennaNueva);
+            model.ConfirmarContrasenna = BCrypt.Net.BCrypt.HashPassword(model.ConfirmarContrasenna);
 
             using var client = _httpClient;
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/ChangePassword";
