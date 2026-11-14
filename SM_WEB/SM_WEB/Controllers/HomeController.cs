@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using SM_WEB.Models;
-using System.Diagnostics;
 using System.Net;
 
 namespace SM_WEB.Controllers
@@ -12,6 +11,7 @@ namespace SM_WEB.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            HttpContext.Session.Clear();
             return View();
         }
 
@@ -26,7 +26,7 @@ namespace SM_WEB.Controllers
             var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Home/Login";
 
             var response = client.PostAsJsonAsync(url, model).Result;
-            
+
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var datos = response.Content.ReadFromJsonAsync<UsuarioResponse>().Result;
@@ -86,7 +86,7 @@ namespace SM_WEB.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ForgotPassword(ForgotRequestModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(model);
 
             using var client = _httpClient;

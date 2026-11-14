@@ -1,11 +1,8 @@
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Org.BouncyCastle.Crypto.Generators;
 using SM_API.Models;
 using SM_API.Services;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace SM_API.Controllers
 {
@@ -18,13 +15,13 @@ namespace SM_API.Controllers
         public IActionResult Login(LoginRequestModel model)
         {
             using var context = new SqlConnection(_configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
-            
+
             var parametros = new DynamicParameters();
             parametros.Add("@CorreoElectronico", model.CorreoElectronico);
 
             var response = context.QueryFirstOrDefault<UsuarioResponse>("sp_IniciarSesionUsuario", parametros);
 
-            if(response == null || !BCrypt.Net.BCrypt.Verify(model.Contrasenna, response.Contrasenna))
+            if (response == null || !BCrypt.Net.BCrypt.Verify(model.Contrasenna, response.Contrasenna))
                 return NotFound("No se validó la información correctamente");
 
             response.Contrasenna = string.Empty;
@@ -41,11 +38,11 @@ namespace SM_API.Controllers
             parametros.Add("@Identificacion", model.Identificacion);
             parametros.Add("@NombreCompleto", model.NombreCompleto);
             parametros.Add("@CorreoElectronico", model.CorreoElectronico);
-            parametros.Add("@Contrasenna", model.Contrasenna);           
+            parametros.Add("@Contrasenna", model.Contrasenna);
 
             var response = context.Execute("sp_RegistroUsuarios", parametros);
 
-            if(response <= 0)
+            if (response <= 0)
                 return UnprocessableEntity("No se registró la información correctamente");
 
             return Ok("Se registró la información correctamente");
@@ -85,7 +82,7 @@ namespace SM_API.Controllers
         {
             string usuarioId = _password.Descifrar(model.UsuarioId);
 
-            if(string.IsNullOrEmpty(usuarioId))
+            if (string.IsNullOrEmpty(usuarioId))
                 return BadRequest("El enlace no es válido o ya expiró");
 
             using var context = new SqlConnection(_configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));

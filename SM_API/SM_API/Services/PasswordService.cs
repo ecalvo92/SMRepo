@@ -65,7 +65,7 @@ namespace SM_API.Services
             var cuenta = _configuration.GetValue<string>("ConnectionStrings:CuentaCorreo") ?? string.Empty;
             var clave = _configuration.GetValue<string>("ConnectionStrings:ClaveCorreo") ?? string.Empty;
 
-            if(string.IsNullOrEmpty(clave))
+            if (string.IsNullOrEmpty(clave))
                 return;
 
             var msg = new MimeMessage();
