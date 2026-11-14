@@ -8,5 +8,7 @@
         public string CorreoElectronico { get; set; } = string.Empty;
         public bool Estado { get; set; }
         public string Contrasenna { get; set; } = string.Empty;
+        public short IdRol { get; set; }
+        public string NombreRol { get; set; } = string.Empty;
     }
 }

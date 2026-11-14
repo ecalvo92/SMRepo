@@ -7,5 +7,7 @@
         public string NombreCompleto { get; set; } = string.Empty;
         public string CorreoElectronico { get; set; } = string.Empty;
         public bool Estado { get; set; }
+        public short IdRol { get; set; }
+        public string NombreRol { get; set; } = string.Empty;
     }
 }
