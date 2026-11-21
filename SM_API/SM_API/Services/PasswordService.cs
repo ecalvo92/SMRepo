@@ -95,7 +95,7 @@ namespace SM_API.Services
                 issuer: _configuration.GetValue<string>("Variables:JwtIssuer"),
                 audience: _configuration.GetValue<string>("Variables:JwtAudience"),
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: creds
             );
             return new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token);
