@@ -47,9 +47,9 @@ GO
 
 SET IDENTITY_INSERT [dbo].[Rol] ON 
 GO
-INSERT [dbo].[Rol] ([IdRol], [NombreRol]) VALUES (1, N'Usuario')
+INSERT [dbo].[Rol] ([IdRol], [NombreRol]) VALUES (1, N'Cliente')
 GO
-INSERT [dbo].[Rol] ([IdRol], [NombreRol]) VALUES (2, N'Administrador')
+INSERT [dbo].[Rol] ([IdRol], [NombreRol]) VALUES (2, N'Soporte')
 GO
 SET IDENTITY_INSERT [dbo].[Rol] OFF
 GO
