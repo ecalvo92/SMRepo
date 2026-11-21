@@ -12,5 +12,7 @@ namespace SM_WEB.Models
 
         [Required(ErrorMessage = "El nombre completo es obligatorio.")]
         public string NombreCompleto { get; set; } = string.Empty;
+
+        public int IdUsuario { get; set; }
     }
 }
