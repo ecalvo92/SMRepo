@@ -11,6 +11,28 @@ namespace SM_WEB.Controllers
         [HttpGet]
         public IActionResult CambiarDatos()
         {
+            var model = new ConsultarUsuarioRequestModel
+            {
+                IdUsuario = HttpContext.Session.GetInt32("ConsecutivoUsuario").GetValueOrDefault()
+            };
+
+            using var client = _httpClient;
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + HttpContext.Session.GetString("Token"));
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Usuario/ConsultarUsuario";
+
+            var response = client.PostAsJsonAsync(url, model).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var datos = response.Content.ReadFromJsonAsync<UsuarioResponse>().Result;
+                var perfil = new PerfilUsuarioViewModel()!;
+                perfil.DatosPersonales.CorreoElectronico = datos!.CorreoElectronico;
+                perfil.DatosPersonales.Identificacion = datos!.Identificacion;
+                perfil.DatosPersonales.NombreCompleto = datos!.NombreCompleto;
+                return View(new PerfilUsuarioViewModel());
+            }
+
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
             return View(new PerfilUsuarioViewModel());
         }
 
@@ -36,6 +58,28 @@ namespace SM_WEB.Controllers
             return View(new PerfilUsuarioViewModel());
         }
 
+        [HttpPost]
+        public IActionResult ActualizarDatosPersonales([Bind(Prefix = "Contrasenna")] ChangePasswordRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(new PerfilUsuarioViewModel { Contrasenna = model });
+
+            model.UsuarioId = HttpContext.Session.GetInt32("ConsecutivoUsuario").ToString()!;
+
+            //Hacer un hash de la contraseña nueva y de la confirmación
+            model.ContrasennaNueva = BCrypt.Net.BCrypt.HashPassword(model.ContrasennaNueva);
+            model.ConfirmarContrasenna = BCrypt.Net.BCrypt.HashPassword(model.ConfirmarContrasenna);
+
+            using var client = _httpClient;
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + HttpContext.Session.GetString("Token"));
+            var url = _configuration.GetValue<string>("Variables:ApiBaseUrl") + "Usuario/ChangePassword";
+
+            var response = client.PutAsJsonAsync(url, model).Result;
+
+            ViewBag.Mensaje = response.Content.ReadAsStringAsync().Result;
+            return View(new PerfilUsuarioViewModel());
+        }
+        
         #endregion
     }
 }

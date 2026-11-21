@@ -31,5 +31,22 @@ namespace SM_API.Controllers
             return Ok("Se actualizó la información correctamente");
         }
 
+        [HttpPost]
+        [Route("ConsultarUsuario")]
+        public IActionResult ConsultarUsuario(ConsultarUsuarioRequestModel model)
+        {
+            using var context = new SqlConnection(_configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@UsuarioId", model.IdUsuario);
+
+            var response = context.QueryFirstOrDefault<UsuarioResponse>("sp_ConsultarIdUsuario", parametros);
+
+            if (response == null)
+                return UnprocessableEntity("No se encontró el usuario");
+
+            return Ok(response);
+        }    
+
     }
 }
