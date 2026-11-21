@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using SM_API.Models;
@@ -6,6 +7,7 @@ using SM_API.Services;
 
 namespace SM_API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class HomeController(IConfiguration _configuration, IPasswordService _password) : ControllerBase
@@ -25,6 +27,8 @@ namespace SM_API.Controllers
                 return NotFound("No se validó la información correctamente");
 
             response.Contrasenna = string.Empty;
+            response.Token = _password.GenerarToken(response.IdUsuario, response.IdRol, response.NombreCompleto);
+
             return Ok(response);
         }
 

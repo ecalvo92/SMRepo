@@ -10,5 +10,6 @@
         public string Contrasenna { get; set; } = string.Empty;
         public short IdRol { get; set; }
         public string NombreRol { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
     }
 }
